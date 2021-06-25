@@ -9,9 +9,12 @@ import LightblueColor from './assets/lightblue.webp';
 import OrangeColor from './assets/orange.webp';
 import YellowColor from './assets/yellow.webp';
 
-function Dropdown() {
-  const ref = useRef();
-  const headerref= useRef();
+interface Props {
+}
+
+const Dropdown: React.FC<Props> = (props) => {
+  const ref = useRef(null);
+  const headerref= useRef(null);
   useOnClickOutside(ref, headerref, () => setIslistopen(false));
   const [isListOpen, setIslistopen] = useState(false);
   const [headerID, setHeaderID] = useState(0);
@@ -60,7 +63,7 @@ function Dropdown() {
     }
   ]);
 
-  const resetThenSet = (id, key) => {
+  const resetThenSet = (id: any, key: any) => {
     const temp = location;
   
     temp.forEach((item) => item.selected = false);
@@ -69,28 +72,11 @@ function Dropdown() {
     setLocation(temp);
   }
 
-  // const close = () => {
-  //   // setIslistopen(false);
-  //   // console.log("inside close!!");
-  // }
-
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //         if(isListOpen){
-  //           window.addEventListener('click', close)
-  //         }
-  //         else{
-  //           window.removeEventListener('click', close)
-  //         }
-  //       }, 0);
-  // });
-
-
   const toggleList = () => {
       setIslistopen(!isListOpen);
   }
 
-  const selectItem = (item) => {
+  const selectItem = (item: any) => {
     const { id, key } = item;
     setHeaderID(id);
     setIslistopen(false);
@@ -134,7 +120,6 @@ function Dropdown() {
               <img src={item.imgUrl} alt="colordisplay" height='20' width='20' style={{ marginRight: 10 }}/>
                   {item.title}
                 </button>
-              
               )
               })
             }
@@ -145,10 +130,10 @@ function Dropdown() {
   
 }
 
-function useOnClickOutside(ref, headerref, handler) {
+function useOnClickOutside(ref: any, headerref: any, handler: any) {
   useEffect(
     () => {
-      const listener = (event) => {
+      const listener = (event: any) => {
         // Do nothing if clicking ref's element or descendent elements
         if (!ref.current || ref.current.contains(event.target)) {
           return;
