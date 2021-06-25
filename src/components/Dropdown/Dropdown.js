@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './styles/dropdown.css';
 import ArrowUp from './assets/arrowUp.svg';
 import ArrowDown from './assets/arrowDown.svg';
@@ -10,6 +10,9 @@ import OrangeColor from './assets/orange.webp';
 import YellowColor from './assets/yellow.webp';
 
 function Dropdown() {
+  const ref = useRef();
+  const headerref= useRef();
+  useOnClickOutside(ref, headerref, () => setIslistopen(false));
   const [isListOpen, setIslistopen] = useState(false);
   const [headerID, setHeaderID] = useState(0);
   const [location, setLocation] = useState([
@@ -66,8 +69,25 @@ function Dropdown() {
     setLocation(temp);
   }
 
+  // const close = () => {
+  //   // setIslistopen(false);
+  //   // console.log("inside close!!");
+  // }
+
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //         if(isListOpen){
+  //           window.addEventListener('click', close)
+  //         }
+  //         else{
+  //           window.removeEventListener('click', close)
+  //         }
+  //       }, 0);
+  // });
+
+
   const toggleList = () => {
-    setIslistopen(!isListOpen);
+      setIslistopen(!isListOpen);
   }
 
   const selectItem = (item) => {
@@ -84,6 +104,7 @@ function Dropdown() {
         type="button"
         className="dd-header"
         onClick={toggleList}
+        ref={headerref}
       >
       <div className="dd-header-title">
       <img src={location[headerID].imgUrl} alt="colordisplay" height='20' width='20' style={{ marginRight: 10 }} />
@@ -97,6 +118,7 @@ function Dropdown() {
         <div
           role="list"
           className="dd-list"
+          ref={ref}
         >
           {location.map((item) => {
               if(item.selected){
@@ -121,6 +143,36 @@ function Dropdown() {
     </div>
   )
   
+}
+
+function useOnClickOutside(ref, headerref, handler) {
+  useEffect(
+    () => {
+      const listener = (event) => {
+        // Do nothing if clicking ref's element or descendent elements
+        if (!ref.current || ref.current.contains(event.target)) {
+          return;
+        }
+        if(!headerref.current || headerref.current.contains(event.target)){
+          return;
+        }
+        handler(event);
+      };
+      document.addEventListener("mousedown", listener);
+      document.addEventListener("touchstart", listener);
+      return () => {
+        document.removeEventListener("mousedown", listener);
+        document.removeEventListener("touchstart", listener);
+      };
+    },
+    // Add ref and handler to effect dependencies
+    // It's worth noting that because passed in handler is a new ...
+    // ... function on every render that will cause this effect ...
+    // ... callback/cleanup to run every render. It's not a big deal ...
+    // ... but to optimize you can wrap handler in useCallback before ...
+    // ... passing it into this hook.
+    [ref, headerref, handler]
+  );
 }
 
 export default Dropdown;
